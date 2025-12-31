@@ -31,7 +31,7 @@ The app allows users to explore books, take a personalized quiz, and view tailor
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/your-username/bookmatch.git
+git clone https://github.com/adeolaoj/bookmatch.git
 cd bookmatch
 ```
 
