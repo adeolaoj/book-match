@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BookSearchInput } from './BookSearchInput';
-import { BookCopy, Sparkles, Search, BookOpen } from 'lucide-react';
+import { BookCopy, BookOpen, Sparkles, Search } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function HomePage() {
