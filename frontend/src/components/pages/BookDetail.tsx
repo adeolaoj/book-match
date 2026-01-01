@@ -63,7 +63,7 @@ export function BookDetail() {
     return null;
   }
 
-  // Mock official synopsis - in a real app this would come from the book data
+  // Mock official synopsis
   const officialSynopsis = book.synopsis || "In this captivating tale, the author weaves a rich tapestry of emotion, adventure, and discovery. The story follows unforgettable characters through a journey that will challenge everything they thought they knew about themselves and the world around them. With beautiful prose and masterful storytelling, this book has captured the hearts of readers worldwide. From the very first page to the stunning conclusion, you'll be transported to a world that feels both familiar and entirely new. A must-read for anyone who loves deeply moving, thought-provoking literature that stays with you long after you've turned the final page.";
 
   const renderStars = (rating: number) => {
