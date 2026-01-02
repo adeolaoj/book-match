@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { BookCopy, ArrowLeft, ArrowRight, Sparkles, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import type { RecommendationInput } from '../../../../shared/recommendation';
 
 interface QuizAnswers {
   aspect: string;
@@ -24,6 +25,7 @@ export function PersonalizedQuiz() {
   const selectedBooks = location.state?.books || [];
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [answers, setAnswers] = useState<QuizAnswers>({
     aspect: '',
     genre: [],
@@ -100,16 +102,46 @@ export function PersonalizedQuiz() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateCurrentStep()) return;
 
-    navigate('/results', { 
-      state: { 
-        books: selectedBooks, 
-        personalized: true,
-        quizAnswers: answers 
-      } 
-    });
+    setIsSubmitting(true);
+
+    try {
+      const formattedInput: RecommendationInput = {
+        seedBooks: selectedBooks,
+        quizAnswers: {
+          aspects: answers.aspect === 'writing' ? 'writingStyle' : answers.aspect === 'world' ? 'worldBuilding' : answers.aspect as any,
+          genres: answers.genre,
+          pacing: answers.pacing === 'moderate' ? 'medium' : answers.pacing as any,
+          length: answers.length === 'any' ? 'noPreference' : answers.length as any,
+          additionalContext: answers.additionalContext || undefined,
+        }
+      };
+
+      const response = await fetch('http://localhost:5000/api/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formattedInput)
+      });
+
+      if (!response.ok) throw new Error('Failed to get recommendations');
+
+      const data = await response.json();
+
+      navigate('/results', { 
+        state: { 
+          books: selectedBooks, 
+          personalized: true,
+          recommendations: data.recommendations 
+        } 
+      });
+    } catch (error) {
+      toast.error('Failed to get recommendations. Please try again.');
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isCurrentStepAnswered = () => {
@@ -340,10 +372,20 @@ export function PersonalizedQuiz() {
             ) : (
               <Button
                 onClick={handleSubmit}
-                className="flex-1 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white h-11 shadow-lg hover:shadow-xl transition-all font-semibold cursor-pointer"
+                disabled={isSubmitting}
+                className="flex-1 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white h-11 shadow-lg hover:shadow-xl transition-all font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Check className="w-4 h-4 mr-2" />
-                Get Recommendations
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Getting Recommendations...
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Get Recommendations
+                  </>
+                )}
               </Button>
             )}
           </div>

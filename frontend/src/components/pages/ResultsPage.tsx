@@ -104,7 +104,7 @@ const MOCK_RECOMMENDATIONS: Book[] = [
 export function ResultsPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { books, personalized } = location.state || { books: [], personalized: false };
+  const { books, personalized, recommendations } = location.state || { books: [], personalized: false, recommendations: null };
   const [hoveredBookId, setHoveredBookId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -117,7 +117,13 @@ export function ResultsPage() {
     return null;
   }
 
-  const topRecommendations = MOCK_RECOMMENDATIONS.slice(0, 5);
+  const topRecommendations = recommendations ? recommendations.map((rec: any) => ({
+    ...rec,
+    cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=450&fit=crop', // default cover
+    rating: 4.0, // default rating
+    description: 'A recommended book based on your preferences.',
+    genres: [],
+  })) : MOCK_RECOMMENDATIONS.slice(0, 5);
   
   // Extended recommendations with match reasons
   const extendedRecommendations = [
@@ -288,7 +294,7 @@ export function ResultsPage() {
         <section className="mb-16">
           
           <div className="grid grid-cols-5 gap-6">
-            {topRecommendations.map((book) => (
+            {topRecommendations.map((book: Book) => (
               <Card
                 key={book.id}
                 onClick={() => handleBookClick(book)}
