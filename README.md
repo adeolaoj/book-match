@@ -3,7 +3,7 @@
 BookMatch is a modern book recommendation web application built with **React, TypeScript, Vite, and Tailwind CSS**.  
 The app allows users to explore books, take a personalized quiz, and view tailored recommendations through a clean, responsive UI.
 
-> 🚧 **Note:** This project is currently frontend-only. Backend integration and recommendation logic will be added in a future phase.
+> 🚧 **Note:** Backend integration and recommendation logic are currently being implemented.
 
 ---
 
